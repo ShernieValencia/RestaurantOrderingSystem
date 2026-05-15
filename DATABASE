@@ -1,0 +1,67 @@
+CREATE DATABASE IF NOT EXISTS ordering_system;
+USE ordering_systems;
+
+-- USERS (LOGIN / REGISTER)
+CREATE TABLE users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('ADMIN','USER') NOT NULL DEFAULT 'USER',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- FOOD ITEMS (MENU / INVENTORY)
+CREATE TABLE food_items (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    price DECIMAL(10,2) NOT NULL,
+    category VARCHAR(50),
+    stock INT DEFAULT 0,
+    available BOOLEAN DEFAULT TRUE
+);
+
+-- CART (IMPORTANT FOR YOUR FLOW)
+CREATE TABLE cart_items (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    food_item_id BIGINT NOT NULL,
+    quantity INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (food_item_id) REFERENCES food_items(id)
+);
+
+-- ORDERS
+CREATE TABLE orders (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    status ENUM('PENDING','PREPARING','READY','DELIVERED','CANCELLED')
+        DEFAULT 'PENDING',
+    total DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- ORDER ITEMS
+CREATE TABLE order_items (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT NOT NULL,
+    food_item_id BIGINT NOT NULL,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id),
+    FOREIGN KEY (food_item_id) REFERENCES food_items(id)
+);
+
+-- BILLS / RECEIPT
+CREATE TABLE bills (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT NOT NULL UNIQUE,
+    subtotal DECIMAL(10,2) NOT NULL,
+    tax DECIMAL(10,2) NOT NULL,
+    total DECIMAL(10,2) NOT NULL,
+    payment_status ENUM('UNPAID','PAID') DEFAULT 'UNPAID',
+    paid_at TIMESTAMP NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id)
+);
