@@ -65,3 +65,9 @@ CREATE TABLE bills (
     paid_at TIMESTAMP NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id)
 );
+
+INSERT INTO food_items (name, description, price, category, stock) VALUES
+('Chocolate Donut', 'Delicious chocolate glazed donut', 35.00, 'Dessert', 20),
+('Vanilla Donut', 'Classic vanilla glazed donut', 30.00, 'Dessert', 15),
+('Strawberry Donut', 'Sweet strawberry glazed donut', 32.00, 'Dessert', 10),
+('Glazed Donut', 'Simple and sweet glazed donut', 28.00, 'Dessert', 25);

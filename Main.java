@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) {
 
         // Default Admin
-        users.add(new User("admin", "admin123", "admin"));
+        //users.add(new User("admin", "admin123", "admin"));
 
         // Menu Items
         menu.add(new MenuItem(1, "Chocolate Donut", 35, 20));
@@ -64,7 +64,11 @@ public class Main {
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
-        users.add(new User(username, password, "customer"));
+
+        String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
+        DatabaseService.executeUpdate(sql, username, password, "customer");
+
+        
 
         System.out.println("Registration successful!");
     }
